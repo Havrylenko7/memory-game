@@ -1,0 +1,75 @@
+body {
+  background: #132507;
+  font-family: "Gill Sans", "Trebuchet MS", Helvetica, sans-serif;
+  font-size: 24px;
+  font-weight: 300;
+}
+
+#appWrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 24px 20px;
+  background: #d17312;
+  color: #ffffff;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: appearance 1s backwards 0.5s;
+}
+
+h3 {
+  text-align: center;
+}
+
+#buttonsContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button {
+  background: #ecc35b;
+  height: 48px;
+  width: 120px;
+  color: black;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+#game {
+  display: grid;
+  width: 440px;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 24px;
+  cursor: pointer;
+}
+
+#game div {
+  background: #12572b;
+  user-select: none;
+  color: #12572b;
+  height: 48px;
+  display: flex;
+  align-items:center;
+  justify-content:center;
+  border-radius: 6px;
+}
+
+.noEvents div {
+  pointer-events: none !important;
+}
+
+@keyframes appearance {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
