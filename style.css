@@ -12,8 +12,9 @@ body {
   transform: translate(-50%, -50%);
   padding: 24px 20px;
   background: #d17312;
-  color: #ffffff;
+  color: black;
   border-radius: 12px;
+  border: 2px solid black;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -22,6 +23,7 @@ body {
 
 h3 {
   text-align: center;
+  color: white;
 }
 
 #buttonsContainer {
@@ -34,12 +36,15 @@ h3 {
   background: #ecc35b;
   height: 48px;
   width: 120px;
-  color: black;
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+
+.button:active {
+  background: #cea233;
 }
 
 #game {
@@ -56,13 +61,34 @@ h3 {
   color: #12572b;
   height: 48px;
   display: flex;
-  align-items:center;
-  justify-content:center;
+  align-items: center;
+  justify-content: center;
   border-radius: 6px;
 }
 
 .noEvents div {
   pointer-events: none !important;
+}
+
+#modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  height: 240px;
+  z-index: 2;
+  font-size: 32px;
+  background-color: #ffffff;
+  border: 2px solid black;
+  border-radius: 16px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hidden {
+  display: none !important;
 }
 
 @keyframes appearance {

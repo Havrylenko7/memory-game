@@ -28,6 +28,7 @@ class MatchGrid {
     this.gameContainer = document.getElementById('game');
     this.start = document.getElementById('start');
     this.reset = document.getElementById('reset');
+    this.modal = document.getElementById('modal');
   }
 
   defineStatus(status) {
@@ -93,7 +94,7 @@ class MatchGrid {
         }
 
         if (0 > seconds) {
-          this.status && window.alert('You lost :(');
+          this.status && this.openModal('You lost &#128542');
           memoryGame.defineStatus(false);
           timer.remove();
           removeInterval(interval);
@@ -128,10 +129,10 @@ class MatchGrid {
 
       this.gameContainer.innerHTML = '';
       this.gameContainer.style.display = 'none';
+
       document
         .getElementById('buttonsContainer')
         .style.justifyContent = 'center'; 
-      
 
       document.getElementById('timerWrapper').hasChildNodes()
        && document.getElementById('timer').remove();
@@ -166,7 +167,8 @@ class MatchGrid {
     
             document.getElementById('timerWrapper').hasChildNodes()
               && document.getElementById('timer').remove();
-            window.alert('You won!');
+
+            this.openModal('You Won! &#127881')
           }
         } else {
           anime({
@@ -189,6 +191,19 @@ class MatchGrid {
       }, 1000)
     }  
   }
+
+  openModal(text) {
+    this.modal.classList.remove("hidden");
+    this.modal.innerHTML = text;
+
+    setTimeout(() => {
+      this.closeModal()
+    }, 2000)
+  };
+
+  closeModal() {
+    this.modal.classList.add("hidden");
+  };
 }
 
 const memoryGame = new MatchGrid(settings);
