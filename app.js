@@ -6,12 +6,19 @@ const settings = {
   timeLimit: 1,
   width: '400px',
   height: '260px',
-  columns: 5,
+  columns: 4,
   rows: 4
 }
 
 class MatchGrid {
-  constructor({ status, timeLimit, height, width, columns, rows }) {
+  constructor({
+    status,
+    timeLimit,
+    height,
+    width,
+    columns,
+    rows
+  }) {
     this.status = status;
     this.time = timeLimit;
     this.size = columns * rows;
@@ -32,10 +39,10 @@ class MatchGrid {
   }
 
   defineStatus(status) {
-    status ? this.status = true : this.status = false;
+    this.status = status;
 
-    memoryGame.gameSettings();
-    memoryGame.game();
+    this.gameSettings();
+    this.game();
   }
 
   gameSettings() {
@@ -47,7 +54,7 @@ class MatchGrid {
   }
 
   game() {
-    if (this.status === true) {
+    if (this.status) {
       this.start.style.display = 'none';
       this.start.innerText = 'Retry';
       this.reset.style.display = 'flex';
@@ -58,52 +65,7 @@ class MatchGrid {
         .getElementById('buttonsContainer')
         .style.justifyContent = 'space-between'; 
 
-      let timer = document.createElement('div');
-      timer.id = 'timer';
-      timer.innerText = 'Ready?';
-
-      document
-        .getElementById('timerWrapper')
-        .appendChild(timer);
-
-      let isInGame = true;
-
-      const app = document.getElementById('appWrapper');
-      app.addEventListener('mouseenter', () => isInGame = true);
-      app.addEventListener('mouseleave', () => isInGame = false);
-      
-      function addMinutes(date, minutes) {
-        date.setMinutes(date.getMinutes() + minutes);
-      
-        return date;
-      }
-      
-      const date = new Date();
-      const newDate = addMinutes(date, this.time);
-      let compensator = 0;
-
-      const interval = setInterval(() => {
-        let now = new Date().getTime();
-        let timeleft = newDate - now + 1000;
-        let seconds = Math.floor((timeleft % (1000 * 60)) / 1000) + compensator;
-
-        if (isInGame) {
-          timer.innerText = `Time: ${seconds}`;
-        } else {
-          ++compensator;
-        }
-
-        if (0 > seconds) {
-          this.status && this.openModal('You lost &#128542');
-          memoryGame.defineStatus(false);
-          timer.remove();
-          removeInterval(interval);
-        }
-      }, 1000)
-
-      function removeInterval(interval) {
-        clearInterval(interval);
-      }
+      this.checkIsInGame();
 
       this.gameContainer.style.removeProperty('display');
       
@@ -118,12 +80,10 @@ class MatchGrid {
 
         this.gameContainer.appendChild(item);
 
-        item.addEventListener('click', () => memoryGame.checkIfSame(item, this.size));
-
+        item.addEventListener('click', () => this.checkIfSame(item, this.size));
       } while (i < this.size);
 
-    } else if (this.status === false) {
-
+    } else if (!this.status) {
       this.start.style.display = 'flex';
       this.reset.style.display = 'none';
 
@@ -139,11 +99,52 @@ class MatchGrid {
     }
   }
 
+  checkIsInGame() {
+    let isInGame = true;
+    const app = document.getElementById('appWrapper');
+
+    app.addEventListener('mouseenter', () => isInGame = true);
+    app.addEventListener('mouseleave', () => isInGame = false);
+
+    this.timer(isInGame);
+  }
+
+  timer(isInGame) {
+    let timer = document.createElement('div');
+    timer.id = 'timer';
+    timer.innerText = 'Ready?';
+    
+    document
+      .getElementById('timerWrapper')
+      .appendChild(timer);
+    
+    const date = new Date();
+    const newDate = this.addMinutes(date, this.time);
+
+    let compensator = 0;
+
+    this.interval = setInterval(() => {
+      let now = new Date().getTime();
+      let timeleft = newDate - now + 1000;
+      let seconds = Math.floor((timeleft % (1000 * 60)) / 1000) + compensator;
+
+      if (isInGame) {
+        timer.innerText = `Time: ${seconds}`;
+      } else {
+        ++compensator;
+      }
+
+      if (0 > seconds) {
+        this.status && this.openModal('You lost &#128542');
+        this.defineStatus(false);
+        timer.remove();
+        clearInterval(this.interval);
+      }
+    }, 1000);
+  }
+
   checkIfSame(el, size) {
-    anime({
-      targets: `.${el.className}`,
-      background: '#d17312'
-    });
+    this.colorAnime(el.className, '#d17312');
 
     if (!this.firstEl) {
       this.firstEl = el;
@@ -162,47 +163,53 @@ class MatchGrid {
           this.secondEl.style.visibility = 'hidden';
 
           if (size === this.match * 2) {
-            memoryGame.defineStatus(false);
+            this.defineStatus(false);
             this.match = 0;
     
             document.getElementById('timerWrapper').hasChildNodes()
               && document.getElementById('timer').remove();
 
-            this.openModal('You Won! &#127881')
+            this.openModal('You Won! &#127881');
           }
         } else {
-          anime({
-            targets: `.${this.firstEl.className}`,
-            background: '#12572b'
-          });
-    
-          anime({
-            targets: `.${this.secondEl.className}`,
-            background: '#12572b'
-          });
+          this.colorAnime(this.firstEl.className, '#12572b');
+          this.colorAnime(this.secondEl.className, '#12572b');
         }
-        document.getElementById('game').classList.remove('noEvents')
+        document.getElementById('game').classList.remove('noEvents');
 
         this.firstEl.style.pointerEvents = 'auto';
         this.secondEl.style.pointerEvents = 'auto';
 
         this.firstEl = undefined;
         this.secondEl = undefined;
-      }, 1000)
+      }, 1000);
     }  
   }
 
+  addMinutes(date, minutes) {
+    date.setMinutes(date.getMinutes() + minutes);
+  
+    return date;
+  };
+
+  colorAnime(target, color) {
+    anime({
+      targets: `.${target}`,
+      background: color
+    });
+  };
+
   openModal(text) {
-    this.modal.classList.remove("hidden");
+    this.modal.classList.remove('hidden');
     this.modal.innerHTML = text;
 
     setTimeout(() => {
-      this.closeModal()
-    }, 2000)
+      this.closeModal();
+    }, 2000);
   };
 
   closeModal() {
-    this.modal.classList.add("hidden");
+    this.modal.classList.add('hidden');
   };
 }
 

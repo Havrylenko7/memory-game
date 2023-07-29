@@ -2,7 +2,6 @@
   "name": "memory",
   "version": "1.0.0",
   "description": "game",
-  "main": "index.html",
   "scripts": {
     "start": "http-server"
   },
