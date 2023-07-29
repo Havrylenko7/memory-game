@@ -41,6 +41,7 @@ class MatchGrid {
   defineStatus(status) {
     this.status = status;
 
+    clearInterval(this.interval);
     this.gameSettings();
     this.game();
   }
@@ -138,7 +139,6 @@ class MatchGrid {
         this.status && this.openModal('You lost &#128542');
         this.defineStatus(false);
         timer.remove();
-        clearInterval(this.interval);
       }
     }, 1000);
   }
@@ -164,6 +164,7 @@ class MatchGrid {
 
           if (size === this.match * 2) {
             this.defineStatus(false);
+
             this.match = 0;
     
             document.getElementById('timerWrapper').hasChildNodes()
